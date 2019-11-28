@@ -26,7 +26,11 @@ export class TextColumn {
     }
 }
 
-var fileDir: string = "src\\outputTenants.txt";
+export function textTableToObject(filePath: string) {
+
+}
+
+var fileDir: string = "src\\test\\outputTenants.txt";
 
 const readInterface = readline.createInterface({
     input: fs.createReadStream(fileDir),

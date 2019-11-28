@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": "C:\\dev\\projects\\text-table-parse"
+		}
+	],
+	"settings": {
+		"mocha.files.glob": "out/test/**/*.spec.js",
+		"mocha.coverage": {
+			"enable": false,
+			"activeOnStart": false
+		}
+	}
+}
