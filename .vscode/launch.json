@@ -15,7 +15,10 @@
             "preLaunchTask": "tsc: build - tsconfig.json",
             "outFiles": [
                 "${workspaceFolder}/out/**/*.js"
-            ]
+            ],
+            "env": {
+                "DEBUG":"*"
+            }
         }
     ]
 }
