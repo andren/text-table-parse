@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as readline from "readline";
+import { Z_RLE } from "zlib";
 
 export class TextTable {
     nCols: number;
@@ -30,7 +31,7 @@ export class TextColumn {
  * 
  */
 export async function parseTextTableToObjectAsync(stream: fs.ReadStream):Promise<TextTable> {
-    const readlineInterface = readline.createInterface({
+    const rl = readline.createInterface({
         input: stream,
         output: process.stdout,
         terminal: false     // TODO
@@ -43,7 +44,7 @@ export async function parseTextTableToObjectAsync(stream: fs.ReadStream):Promise
         var labelLine: string;
         let textTable = new TextTable();
 
-        readlineInterface.on("line", (line) => {
+        rl.on("line", (line) => {
 
             // ----- Table line 0 - Labels of each column -----
             if (lineNum == 0) {
@@ -97,22 +98,30 @@ export async function parseTextTableToObjectAsync(stream: fs.ReadStream):Promise
     
                 // ----- Table lines 2,3,... - Data -----
             } else {
-                for (let nCol = 0; nCol < textTable.nCols; nCol++) {
-                    let start = textTable.col[nCol].startIndex;
-                    let end = textTable.col[nCol].endIndex;
-    
-                    let oneColumnLine;
-                    if (isNaN(end))
-                        end = line.length;
-    
-                    oneColumnLine = line.slice(start, end).trimRight();
-                    textTable.col[nCol].lin[lineNum] = oneColumnLine;
+                // if a complete whitespace line is found then emit rl.close() event and...
+                if(line.match(/^\s*$/)) {
+                    rl.close();
+                    rl.removeAllListeners();    // ... immediately removeAllListeners() to avoid further non-whitespace lines
+                    return;
+                }
+                else {
+                    for (let nCol = 0; nCol < textTable.nCols; nCol++) {
+                        let start = textTable.col[nCol].startIndex;
+                        let end = textTable.col[nCol].endIndex;
+        
+                        let oneColumnLine;
+                        if (isNaN(end))
+                            end = line.length;
+        
+                        oneColumnLine = line.slice(start, end).trimRight();
+                        textTable.col[nCol].lin[lineNum] = oneColumnLine;
+                    }
                 }
             }
             lineNum++;
         });
 
-        readlineInterface.on('close', () => {
+        rl.on('close', () => {
             textTable.nLins = lineNum+1;
             resolve(textTable);
         });
