@@ -1,6 +1,5 @@
 import * as fs from "fs";
 import * as readline from "readline";
-import { Z_RLE } from "zlib";
 
 export class TextTable {
     nCols: number;
@@ -127,22 +126,3 @@ export async function parseTextTableToObjectAsync(stream: fs.ReadStream):Promise
         });
     });
 }
-// ---------
-
-// let testFileDir: string = "src\\test\\outputTenants.txt";
-// let testStream = fs.createReadStream(testFileDir);
-
-// let testResult_Table: TextTable;
-
-// parseTextTableToObjectAsync(testStream)
-// .then( (promiseResult) => {
-//     testResult_Table = promiseResult;
-//     console.log("res=",promiseResult);
-// })
-// .catch( (promiseError) => {
-//     console.log("err=",promiseError);
-// })
-// .finally( () => {
-//     console.log("fin=",testFileDir);
-//     console.log(testResult_Table);
-// });
