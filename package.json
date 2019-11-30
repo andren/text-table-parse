@@ -4,10 +4,10 @@
   "description": "a text-table parser for PowerShell-style text tables",
   "main": "main.ts",
   "scripts": {
-    "test": "mocha --timeout 5000 -r ts-node/register src/**/*.spec.ts"
+    "test": "mocha -r ts-node/register src/**/*.spec.ts"
   },
   "author": "André Nascimento",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@types/chai": "^4.2.5",
     "@types/chai-as-promised": "^7.1.2",
