@@ -28,6 +28,7 @@ export class TextColumn {
 
 /**
  * 
+ * @param stream A file stream created 
  */
 export async function parseTextTableToObjectAsync(stream: fs.ReadStream):Promise<TextTable> {
     const rl = readline.createInterface({
