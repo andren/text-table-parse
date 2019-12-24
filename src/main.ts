@@ -124,7 +124,7 @@ export async function parseTextTableToObjectAsync(stream: fs.ReadStream | Readab
         });
 
         rl.on('close', () => {
-            textTable.nLins = lineNum+1;
+            textTable.nLins = lineNum;
             resolve(textTable);
         });
     });
