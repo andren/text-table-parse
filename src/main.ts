@@ -1,5 +1,6 @@
 import * as fs from "fs";
 import * as readline from "readline";
+import { Readable } from "stream";
 
 export class TextTable {
     nCols: number;
@@ -27,10 +28,11 @@ export class TextColumn {
 }
 
 /**
+ * Takes a PowerShell-style table from a stream and objectifies it to a TextTable
  * 
- * @param stream A file stream created 
+ * @param stream A stream based on fs.ReadStream or stream.Readable
  */
-export async function parseTextTableToObjectAsync(stream: fs.ReadStream):Promise<TextTable> {
+export async function parseTextTableToObjectAsync(stream: fs.ReadStream | Readable):Promise<TextTable> {
     const rl = readline.createInterface({
         input: stream,
         output: process.stdout,
