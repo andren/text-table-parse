@@ -13,7 +13,7 @@ Column1                              LabelCol2            Column 3
 asf212fa-f12f-f1g4-asf9-08h20n1nt01n This is another line Reader
 ```
 
-You can use this library like so, assuming output is your TextTable as a string:
+You can use this library like so, assuming `output` is your TextTable as a string:
 
 ```javascript
 let s = new Readable();
