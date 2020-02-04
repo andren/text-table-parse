@@ -54,39 +54,7 @@ expectedTable.col.push(expectedColumn);
 expectedTable.col.push(expectedColumn2);
 expectedTable.col.push(expectedColumn3);
 
-describe("Testing fs.ReadStream from \"fs\" API", () => {
-    it("\"outputTenantsNoSpace.txt\" should return textTable with right properties", async () => {
-        // Arrange
-        let testFileDir: string = "src\\test\\outputTenantsNoSpace.txt";
-        let testStream: fs.ReadStream = fs.createReadStream(testFileDir);
-
-        // Act
-        const result = await main.parseTextTableToObjectAsync(testStream);
-
-        // Assert
-        expect(result).to.eql(expectedTable);
-        console.log("nLins=",result.nLins);
-        
-    });
-
-    it("\"outputTenants.txt\" should return textTable with right properties", async () => {
-        // Arrange
-        let testFileDir: string = "src\\test\\outputTenants.txt";
-        let testStream = fs.createReadStream(testFileDir);
-
-        // Act
-        const result = await main.parseTextTableToObjectAsync(testStream);
-
-        // Assert
-        expect(result).to.eql(expectedTable);
-        console.log("nLins=",result.nLins);
-    });
-});
-
-describe("Testing Readable streams from \"stream\" API", () => {
-    it("String similar to \"outputTenantsNoSpace.txt\" should return textTable with right properties", async () => {
-        // Arrange
-        let expectedString =
+let expectedStringNoSpace =
 `ID                                   Name                              Roles
 --                                   ----                              -----
 aaaaaa11-bb22-c3c3-d44d-dsa8cjas0dja smallletters                      Administrator
@@ -97,21 +65,7 @@ a125125n-76e1-4wb4-bac5-c83b2387f120 --startswith---endswith----       Contribut
 bbbbbb22-09ge-41de-b212-b1t40ttet9e6 'allthethingsarebetweenquotessss' Reader
 `
 
-        let testStream = new Readable();
-        testStream._read = () => { };
-        testStream.push(expectedString);
-        testStream.push(null);
-        
-        // Act
-        const result = await main.parseTextTableToObjectAsync(testStream);
-
-        // Assert
-        expect(result).to.eql(expectedTable);
-        console.log("nLins=",result.nLins);
-    });
-    it("String similar to \"outputTenants.txt\" should return textTable with right properties", async () => {
-        // Arrange
-        let expectedString =
+let expectedString =
 `ID                                   Name                              Roles
 --                                   ----                              -----
 aaaaaa11-bb22-c3c3-d44d-dsa8cjas0dja smallletters                      Administrator
@@ -124,6 +78,47 @@ bbbbbb22-09ge-41de-b212-b1t40ttet9e6 'allthethingsarebetweenquotessss' Reader
 Command completed successfully in 00:00:02.4911691.
 `
 
+describe("--- Async tests ---", () => {
+    it("fs.ReadStream | \"outputTenantsNoSpace.txt\" should return textTable with right properties", async () => {
+        // Arrange
+        let testFileDir: string = "src\\test\\outputTenantsNoSpace.txt";
+        let testStream: fs.ReadStream = fs.createReadStream(testFileDir);
+
+        // Act
+        const result = await main.parseTextTableToObjectAsync(testStream);
+
+        // Assert
+        expect(result).to.eql(expectedTable);
+    });
+
+    it("fs.ReadStream | \"outputTenants.txt\" should return textTable with right properties", async () => {
+        // Arrange
+        let testFileDir: string = "src\\test\\outputTenants.txt";
+        let testStream: fs.ReadStream = fs.createReadStream(testFileDir);
+
+        // Act
+        const result = await main.parseTextTableToObjectAsync(testStream);
+
+        // Assert
+        expect(result).to.eql(expectedTable);
+    });
+
+    it("Readable stream | String similar to \"outputTenantsNoSpace.txt\" should return textTable with right properties", async () => {
+        // Arrange
+        let testStream = new Readable();
+        testStream._read = () => { };
+        testStream.push(expectedStringNoSpace);
+        testStream.push(null);
+        
+        // Act
+        const result = await main.parseTextTableToObjectAsync(testStream);
+
+        // Assert
+        expect(result).to.eql(expectedTable);
+    });
+
+    it("Readable stream | String similar to \"outputTenants.txt\" should return textTable with right properties", async () => {
+        // Arrange
         let testStream = new Readable();
         testStream._read = () => { };
         testStream.push(expectedString);
@@ -134,6 +129,22 @@ Command completed successfully in 00:00:02.4911691.
 
         // Assert
         expect(result).to.eql(expectedTable);
-        console.log("nLins=",result.nLins);
+    });
+});
+
+describe("--- Sync tests ---", () => {
+    it("Sync | String similar to \"outputTenantsNoSpace.txt\" should return textTable with right properties", () => {
+        // Arrange
+        // Act
+        const result = main.parseTextTableToObjectSync(expectedStringNoSpace);
+        // Assert
+        expect(result).to.eql(expectedTable);
+    });
+    it("Sync | String similar to \"outputTenants.txt\" should return textTable with right properties", () => {
+        // Arrange
+        // Act
+        const result = main.parseTextTableToObjectSync(expectedString);
+        // Assert
+        expect(result).to.eql(expectedTable);
     });
 });

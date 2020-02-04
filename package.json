@@ -1,6 +1,6 @@
 {
   "name": "text-table-parse",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "a text-table parser for PowerShell-style text tables",
   "main": "out/main.js",
   "types": "out/main.d.ts",
