@@ -30,9 +30,11 @@ export class TextColumn {
 /**
  * Takes a PowerShell-style table from a stream and objectifies it to a TextTable asynchronously
  * 
- * @param stream A stream based on fs.ReadStream or stream.Readable
+ * @param stream A stream based on fs.ReadStream or stream.Readable, containing a PowerShell-style table
  */
-export async function parseTextTableToObjectAsync(stream: fs.ReadStream | Readable): Promise<TextTable> {
+async function parseTextTableToObjectAsync(stream: fs.ReadStream | Readable): Promise<TextTable> {
+    throw Error("Async implementation does not work with text before table");
+
     const rl = readline.createInterface({
         input: stream,
         output: process.stdout,
@@ -141,9 +143,23 @@ export function parseTextTableToObjectSync(input: string): TextTable {
     // Splits whole input into lines divided by "\n" character
     let inputLines: string[] = input.split("\n");
 
-    // Assuming label and delimiter lines are always first and second, respectively
-    let labelLine: string = inputLines[0];
-    let delimLine: string = inputLines[1];
+    let labelLine: string;
+    let delimLine: string;
+    let delimIndex: number;
+
+    // The lines for label and delimiter can be found using RegEx
+    for (let i = 0; i < inputLines.length; i++) {
+        if( (inputLines[i].search(/-[^\w][ -]+$/gm)) == 0 ) {
+            delimIndex = i;
+            labelLine = inputLines[delimIndex-1];
+            delimLine = inputLines[delimIndex];
+        }
+    }
+
+    // Keep removing the top lines from inputLines until you reach the text table itself.
+    //     (Magic Number 1 is accounting for the label line just above the delimeter line.)
+    for (let i = 0; i < delimIndex-1; i++)
+        inputLines.shift();
 
     // Determine number of columns
     let colIndexes: number[] = [];
@@ -166,7 +182,7 @@ export function parseTextTableToObjectSync(input: string): TextTable {
         if (y != textTable.nCols - 1)
             colWidth = Math.abs(colIndexes[y + 1] - colIndexes[y]);
         else    // ...except for the last element to be left undefined, as later it is computed to NaN, easier to detect
-            colWidth = undefined;                   // colWidth = null; // TODO: maybe null?
+            colWidth = undefined;                   // TODO: maybe colWidth = null; which would be easier?
         let col = new TextColumn(colIndexes[y], colWidth);
         textTable.col.push(col)
     }
@@ -203,15 +219,6 @@ export function parseTextTableToObjectSync(input: string): TextTable {
     return textTable;
 }
 
-let expectedStringNoSpace =
-`ID                                   Name                              Roles
---                                   ----                              -----
-aaaaaa11-bb22-c3c3-d44d-dsa8cjas0dja smallletters                      Administrator
-sda89ca8-4aa3-4558-adbb-d3fc34631830 Startcap                          Administrator
-v12avs23-4d25-4b16-agqd-a9a2t8d11e3a this test spaces                  Administrator
-av12v12v-36f6-421a-ag25-34e41e53d2ta Some_NAME_HereInalternatingCases  Contributor
-a125125n-76e1-4wb4-bac5-c83b2387f120 --startswith---endswith----       Contributor
-bbbbbb22-09ge-41de-b212-b1t40ttet9e6 'allthethingsarebetweenquotessss' Reader
-`
-
-parseTextTableToObjectSync(expectedStringNoSpace);
+// let textTableWithPrePostTextDir: string = "src\\test\\TextTableWithPrePostText.txt";
+// let textTableWithPrePostText: string = fs.readFileSync(textTableWithPrePostTextDir).toString();
+// parseTextTableToObjectSync(textTableWithPrePostText);
