@@ -32,7 +32,7 @@ export class TextColumn {
  * 
  * @param stream A stream based on fs.ReadStream or stream.Readable, containing a PowerShell-style table
  */
-async function parseTextTableToObjectAsync(stream: fs.ReadStream | Readable): Promise<TextTable> {
+export async function parseTextTableToObjectAsync(stream: fs.ReadStream | Readable): Promise<TextTable> {
     throw Error("Async implementation does not work with text before table");
 
     const rl = readline.createInterface({
@@ -218,7 +218,3 @@ export function parseTextTableToObjectSync(input: string): TextTable {
 
     return textTable;
 }
-
-// let textTableWithPrePostTextDir: string = "src\\test\\TextTableWithPrePostText.txt";
-// let textTableWithPrePostText: string = fs.readFileSync(textTableWithPrePostTextDir).toString();
-// parseTextTableToObjectSync(textTableWithPrePostText);
