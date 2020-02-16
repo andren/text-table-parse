@@ -5,7 +5,8 @@
   "main": "out/main.js",
   "types": "out/main.d.ts",
   "scripts": {
-    "test": "mocha -r ts-node/register src/**/*.spec.ts"
+    "test": "mocha -r ts-node/register src/**/*.spec.ts",
+    "build": "tsc"
   },
   "author": "André Nascimento",
   "license": "MIT",
